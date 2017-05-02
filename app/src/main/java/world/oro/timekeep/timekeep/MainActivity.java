@@ -1,13 +1,18 @@
 package world.oro.timekeep.timekeep;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -19,15 +24,57 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaRecorder mRecorder = null;
 
+    private Button startButton = null;
+
+    final int PERM = 7766;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this.getBaseContext(),
+                Manifest.permission.WRITE_CALENDAR);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERM);
+        }
+
+
+        startButton = (Button) findViewById(R.id.start);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startRecording(view);
+            }
+        });
+
+        startButton = (Button) findViewById(R.id.stop);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                stopRecording(view);
+            }
+        });
     }
 
 
-    private void startRecording(View view) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERM: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    //we never reach this for this
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    public void startRecording(View view) {
+
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -49,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         mRecorder.start();
     }
 
-    private void doneRecording(View view) {
+    public void stopRecording(View view) {
         mRecorder.stop();
         sendEmail();
     }
