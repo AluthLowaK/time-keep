@@ -9,6 +9,9 @@ import android.view.View;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,20 +27,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void startRecording() {
+    private void startRecording(View view) {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile("/tmp/cache.3gp");
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
+
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("/tmp/cache.3gp"));
+            FileDescriptor fd2 = fileOutputStream.getFD();
+
+
+            mRecorder.setOutputFile(fd2);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
             mRecorder.prepare();
         } catch (IOException e) {
             //Log.e(LOG_TAG, "prepare() failed");
         }
 
         mRecorder.start();
+    }
+
+    private void doneRecording(View view) {
+        mRecorder.stop();
+        sendEmail();
     }
 
 
@@ -51,14 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 "Test Subject");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
                 "go on read the emails");
-//        Log.v(getClass().getSimpleName(), "sPhotoUri=" + Uri.parse("file:/"+ sPhotoFileName));
-        //emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:/"+ sPhotoFileName));
+
+        emailIntent.putExtra(Intent.EXTRA_STREAM, "file://tmp/cache.3gp");
+        emailIntent.setType("audio/gpp");
         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-
-
     }
 
-    public void getObjective(View view) {
-        startRecording();
-    }
 }
