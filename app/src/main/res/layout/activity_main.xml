@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,11 +9,11 @@
     tools:context="world.oro.timekeep.timekeep.MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start"
         android:onClick="startRecording"
+        android:text="Start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -30,16 +29,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:layout_marginTop="50dp"
+        android:id="@+id/done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Done"
-        android:onClick="doneRecording"
+        android:layout_marginTop="50dp"
         android:background="@android:color/holo_green_dark"
+        android:onClick="doneRecording"
+        android:text="Done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </LinearLayout>
